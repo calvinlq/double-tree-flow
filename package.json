@@ -23,6 +23,13 @@
   "author": "calvinlq",
   "email": "calvinlq@163.com",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calvinlq/double-tree-flow.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "devDependencies": {
     "@types/node": "^24.3.0",
     "@vitejs/plugin-react": "^5.0.1",
