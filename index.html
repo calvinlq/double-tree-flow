@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Tree Flow Demo</title>
+    <style>
+        .app-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h3>Double Tree Flow Demo</h1>
+        <div id="trees-container" data-treeWidth="300" data-treeHeight="200"></div>
+    </div>
+
+    <script type="module">
+        import DoubleTreeFlow from './index.ts';
+        import './index.scss'
+        import { LTreeData, RTreeData, lnkList } from './mockData.js';
+
+        // 初始化组件 
+        new DoubleTreeFlow('trees-container', LTreeData, RTreeData, lnkList);
+    </script>
+</body>
+</html>

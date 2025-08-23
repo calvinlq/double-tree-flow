@@ -1,0 +1,34 @@
+{
+  "name": "double-tree-flow",
+  "version": "1.0.0",
+  "description": "Double tree flow visualization tool",
+  "type": "module",
+  "main": "dist/tree-flow.umd.js",
+  "module": "dist/tree-flow.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "tree",
+    "connection",
+    "visualization",
+    "canvas"
+  ],
+  "author": "calvinlq",
+  "email": "calvinlq@163.com",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@vitejs/plugin-react": "^5.0.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "sass": "^1.90.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
+  }
+}

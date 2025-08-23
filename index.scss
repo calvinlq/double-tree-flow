@@ -1,0 +1,309 @@
+$tree-line-color: #eee;
+$tree-line-width: 1px;
+$before-line-height: 22px;
+$after-line-top: 22px;
+$has-children-line-length: 14px;
+$has-children-line-top: 22px;
+$last-child-line-height: 22px;
+$line-length: 36px;
+$not-children-left: -18px;
+
+// 层级背景颜色变量
+$level-1-bg: #e6f7ff;
+$level-2-bg: #fff2e8;
+$level-3-bg: #f6ffed;
+$level-4-bg: #fff0f6;
+$level-5-bg: #f0f5ff;
+$level-6-bg: #fffbe6;
+$level-7-bg: #e6fffa;
+$level-8-bg: #f5f0ff;
+$level-9-bg: #fff0f6;
+$level-10-bg: #f0f5ff;
+$level-11-bg: #fffbe6;
+$level-12-bg: #e6fffa;
+$level-13-bg: #f5f0ff;
+$level-14-bg: #fff0f6;
+$level-15-bg: #f0f5ff;
+$level-16-bg: #fffbe6;
+
+// 层级背景颜色映射
+$level-bg-map: (
+  1: $level-1-bg,
+  2: $level-2-bg,
+  3: $level-3-bg,
+  4: $level-4-bg,
+  5: $level-5-bg,
+  6: $level-6-bg,
+  7: $level-7-bg,
+  8: $level-8-bg,
+  9: $level-9-bg,
+  10: $level-10-bg,
+  11: $level-11-bg,
+  12: $level-12-bg,
+  13: $level-13-bg,
+  14: $level-14-bg,
+  15: $level-15-bg,
+  16: $level-16-bg
+);
+
+// 层级左偏移量映射
+$level-left-map: (
+  1: -26px,
+);
+@for $i from 2 through 15 {
+  $value: -42px + $i;
+  $level-left-map: map-merge($level-left-map, ($i: $value));
+}
+// 层级前左偏移量映射
+$level-before-left-map: ();
+// 层级后左偏移量映射
+$level-after-left-map: ();
+
+
+
+// 定义mixin用于生成不同层级节点样式
+@mixin tree-node-level($level, $left-offset) {
+  .tree-node.level-#{$level} {
+    &::before {
+      left: $left-offset;
+      width: $tree-line-width;
+      height: 100%;
+      top: 0;
+    }
+
+    &::after {
+      left: $left-offset;
+      width: $line-length;
+      height: $tree-line-width;
+      top: 60%;
+    }
+
+    &.has-children {
+      &::before {
+        width: $tree-line-width;
+        height: 100%;
+        left: $left-offset;
+        top: 0;
+      }
+
+      &::after {
+        width: $has-children-line-length;
+        top: $has-children-line-top;
+        left: $left-offset;
+      }
+    }
+
+    &:last-child::before {
+      width: $tree-line-width;
+      height: $last-child-line-height;
+      top: 0;
+    }
+  }
+}
+
+// 树形容器样式
+.tree-container {
+  padding: 8px 16px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  position: relative;
+}
+
+// 树节点行样式
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  overflow: hidden;
+  border-radius: 5px;
+
+  @for $level from 1 through 15 {
+    &.level-#{$level} {
+      margin-left: map-get($level-left-map, $level);
+
+      &.not-children {
+        margin-left: $not-children-left;
+      }
+    }
+  }
+}
+
+// 树节点基础样式
+.tree-node {
+  padding: 8px 0 0 25px;
+  position: relative;
+
+  // 伪元素基础样式
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: $tree-line-color;
+  }
+
+  &::before {
+    left: 4px;
+    top: 60%;
+    width: 25px;
+    height: $tree-line-width;
+    z-index: 1;
+  }
+
+  &::after {
+    left: 4px;
+    top: 0;
+    width: $tree-line-width;
+    height: 100%;
+  }
+
+  // 最后一个节点的样式
+  &:last-child::after {
+    height: $last-child-line-height;
+  }
+
+  // 层级1节点样式
+  &.level-1-node {
+    margin-left: 0;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    > .tree-children {
+      padding-left: 15px;
+
+      &::before {
+        left: 15px;
+        width: 15px;
+        height: $tree-line-width;
+      }
+    }
+  }
+
+  @for $level from 2 through 15 {
+    &.level-#{$level} {
+      &::before {
+        left: map-get($level-before-left-map, $level);
+        width: $tree-line-width;
+        height: 100%;
+        top: 0;
+      }
+      &::after {
+        left: map-get($level-left-map, $level);
+        width: $line-length;
+        height: $tree-line-width;
+        top: 60%;
+      }
+
+      &.has-children {
+        &::before {
+          width: $tree-line-width;
+          height: 100%;
+          top: 0;
+        }
+
+        &::after {
+          width: $has-children-line-length;
+          top: $has-children-line-top;
+        }
+      }
+
+      &:last-child::before,
+      &.has-children:last-child::before {
+        width: $tree-line-width;
+        height: $last-child-line-height;
+        top: 0;
+      }
+      
+    }
+  }
+
+  @for $i from 1 through 16 {
+    $value: -34px + $i;
+    $level-before-left-map: map-merge($level-before-left-map, ($i: $value));
+    $level-after-left-map: map-merge($level-after-left-map, ($i: $value));
+    @include tree-node-level($i, map-get($level-after-left-map, $i));
+
+    // 层级背景颜色样式
+    &[data-level="#{$i}"] .tree-label {
+      background-color: map-get($level-bg-map, $i);
+    }
+  }
+  
+}
+
+// 树切换按钮样式
+.tree-toggle {
+  cursor: pointer;
+  display: inline-block;
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px;
+  margin-right: 8px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  position: relative;
+  z-index: 10;
+  background-color: white;
+}
+
+// 子节点容器样式
+.tree-children {
+  display: none;
+  margin-left:0;
+
+  &.active {
+    display: block;
+  }
+}
+
+// 节点标签样式
+  .tree-label {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    width: 100%;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    color: #303033;
+    font-size: 14px;
+
+    &.selected {
+      background-color: #357ae8;
+      color: white;
+      box-shadow: 0 2px 10px rgba(53, 122, 232, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  // 为不同层级的选中节点提供更丰富的视觉反馈
+  @for $i from 1 through 16 {
+    .tree-node[data-level="#{$i}"] .tree-label.selected {
+      $base-color: map-get($level-bg-map, $i);
+      $adjusted-bg: adjust-color($base-color, $saturation: 40%, $lightness: -15%);
+      $lightness: lightness($adjusted-bg);
+      
+      background-color: $adjusted-bg;
+      color: if($lightness > 40%, #333, white);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+// 连接层样式
+#connection-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
