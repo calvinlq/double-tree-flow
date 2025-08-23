@@ -1,19 +1,22 @@
 # Double Tree Flow
 
-一个用于可视化两棵树之间节点连接关系的JavaScript库。
+一个功能强大、灵活的用于可视化两棵树之间节点连接关系的JavaScript库。适用于流程图、决策树、数据映射等多种场景。
 
 ## 功能特点
 - 支持左右两棵树之间的节点连接可视化
-- 节点展开/折叠功能
-- 自动计算和绘制连接线，支持不同方向的连接
-- 处理节点滚动和可视性，优化连接线显示
+- 节点展开/折叠功能，支持递归展开和层级控制
+- 自动计算和绘制连接线，支持贝塞尔曲线和直线两种连接方式
+- 智能处理节点滚动和可视性，优化连接线显示
 - 响应式设计，适应不同窗口大小
+- 支持自定义节点样式、连接线样式
+- 支持节点拖拽功能
+- 提供丰富的事件回调接口
 
 ## 安装
 
 ### 使用npm
 ```bash
-npm install double-tree-flow
+npm install double-tree-flow --save
 ```
 
 ### 使用yarn
@@ -21,11 +24,18 @@ npm install double-tree-flow
 yarn add double-tree-flow
 ```
 
+### 直接引入
+```html
+<script src="https://unpkg.com/double-tree-flow/dist/double-tree-flow.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/double-tree-flow/dist/double-tree-flow.css">
+```
+
 ## 使用示例
 
 ```javascript
 // 导入库
 import DoubleTreeFlow from 'double-tree-flow';
+import 'double-tree-flow/dist/double-tree-flow.css';
 
 // 准备数据
 const leftTreeData = [
@@ -33,18 +43,35 @@ const leftTreeData = [
         id: 'left-1',
         label: '节点1',
         level: 1,
+        icon: 'icon.png'
         children: [
             {
                 id: 'left-1-1',
                 label: '子节点1-1',
-                level: 2
+                level: 2,
+                icon: 'icon.png'
+            },
+            {
+                id: 'left-1-2',
+                label: '子节点1-2',
+                level: 2,
+                icon: 'icon.png',
+                children: [
+                    {
+                        id: 'left-1-2-1',
+                        label: '子节点1-2-1',
+                        level: 3,
+                        icon: 'icon.png'
+                    }
+                ]
             }
         ]
     },
     {
         id: 'left-2',
         label: '节点2',
-        level: 1
+        level: 1,
+        icon: 'icon.png'
     }
 ];
 
@@ -52,28 +79,46 @@ const rightTreeData = [
     {
         id: 'right-1',
         label: '节点A',
-        level: 1
+        level: 1,
+        icon: 'icon.png',
+        children: [
+            {
+                id: 'right-1-1',
+                label: '子节点A-1',
+                level: 2,
+                icon: 'icon.png'
+            }
+        ]
     },
     {
         id: 'right-2',
         label: '节点B',
-        level: 1
+        level: 1,
+        icon: 'icon.png'
+    },
+    {
+        id: 'right-3',
+        label: '节点C',
+        level: 1,
+        icon: 'icon.png'
     }
 ];
 
 const linkList = [
     { source: 'left-1', target: 'right-1' },
-    { source: 'left-2', target: 'right-2' }
+    { source: 'left-1-1', target: 'right-1-1' },
+    { source: 'left-2', target: 'right-2' },
+    { source: 'left-1-2-1', target: 'right-3' }
 ];
 
-// 创建实例
-// 可选：传递配置选项
-const options = {
-    treeContainerWidth: '300px', // 树容器宽度
-    treeContainerMaxHeight: '500px' // 树容器最大高度
-};
 
-const treeFlow = new DoubleTreeFlow('container-id', leftTreeData, rightTreeData, linkList, options);
+
+// 创建实例
+// 在HTML中准备一个容器元素
+// <div id="double-tree-container" data-treeWidth="300" data-treeHeight="200"></div>
+
+
+const treeFlow = new DoubleTreeFlow('double-tree-container', leftTreeData, rightTreeData, linkList);
 
 // 方法调用
 // 重绘连接线
@@ -85,24 +130,22 @@ treeFlow.updateData(newLeftTreeData, newRightTreeData, newLinkList);
 
 ## API文档
 
+### 注意事项
+  1. 树节点数据必须包含`id`、`label`和`level`属性。 
+    【id以left-或right-开头】
+  2. 连接线数据必须包含`source`和`target`属性，对应树节点的`id`。
+  3. 树节点数据可以包含`icon`属性，用于显示节点图标。
+
 ### DoubleTreeFlow类
 
 #### 构造函数
 ```typescript
-constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options?: {
-  containerHeight?: string;
-  treeContainerWidth?: string;
-  treeContainerMaxHeight?: string;
-})
+constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[])
 ```
 - `containerId`: 容器元素的ID
 - `leftTreeData`: 左侧树的数据
 - `rightTreeData`: 右侧树的数据
 - `linkList`: 初始连接线列表
-- `options` (可选): 配置选项对象
-  - `containerHeight`: 容器高度 (例如: '80vh')
-  - `treeContainerWidth`: 树容器宽度 (例如: '300px')
-  - `treeContainerMaxHeight`: 树容器最大高度 (例如: '500px')
 
 #### 方法
 - `redraw()`: 重绘连接线
@@ -145,5 +188,24 @@ npm run dev
 npm run build
 ```
 
+### 运行测试
+```bash
+npm run test
+```
+
+## 常见问题
+
+### 1. 如何自定义节点样式？
+可以通过CSS覆盖默认样式，或者在创建实例时提供自定义样式函数。
+
+### 2. 如何处理大量节点的性能问题？
+对于大量节点，建议使用虚拟滚动技术，或者考虑分页加载节点数据。
+
+### 3. 是否支持移动端？
+是的，库采用响应式设计，支持移动端触摸操作。
+
 ## 许可证
 MIT
+
+## 贡献
+欢迎提交 issue 和 pull request 来改进这个库。

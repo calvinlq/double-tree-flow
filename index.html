@@ -13,7 +13,7 @@
 <body>
     <div class="app-container">
         <h3>Double Tree Flow Demo</h1>
-        <div id="trees-container" data-treeWidth="300" data-treeHeight="200"></div>
+        <div id="double-tree-container" data-treeWidth="300" data-treeHeight="200"></div>
     </div>
 
     <script type="module">
@@ -22,7 +22,7 @@
         import { LTreeData, RTreeData, lnkList } from './mockData.js';
 
         // 初始化组件 
-        new DoubleTreeFlow('trees-container', LTreeData, RTreeData, lnkList);
+        new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList);
     </script>
 </body>
 </html>
