@@ -118,7 +118,10 @@ const linkList = [
 // <div id="double-tree-container" data-treeWidth="300" data-treeHeight="200"></div>
 
 
-const treeFlow = new DoubleTreeFlow('double-tree-container', leftTreeData, rightTreeData, linkList);
+const treeFlow = new DoubleTreeFlow('double-tree-container', leftTreeData, rightTreeData, linkList, {
+  bezier: 100,
+  enableLink: true
+});
 
 // 方法调用
 // 重绘连接线
