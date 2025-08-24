@@ -1,10 +1,10 @@
 {
-  "name": "double-tree-flow",
+  "name": "@calvinlq/double-tree-flow",
   "version": "1.0.0",
   "description": "Double tree flow visualization tool",
   "type": "module",
-  "main": "dist/tree-flow.umd.js",
-  "module": "dist/tree-flow.es.js",
+  "main": "dist/double-tree-flow.umd.js",
+  "module": "dist/double-tree-flow.es.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/calvinlq/double-tree-flow.git"
+    "url": "git+https://github.com/calvinlq/double-tree-flow.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

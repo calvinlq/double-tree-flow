@@ -18,6 +18,8 @@ node_modules/
 .env.test.local
 .env.production.local
 
+.npmrc
+
 # 临时文件
 .DS_Store
 Thumbs.db

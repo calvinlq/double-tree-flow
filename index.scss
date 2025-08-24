@@ -1,3 +1,6 @@
+@use 'sass:map';
+@use 'sass:color';
+
 $tree-line-color: #eee;
 $tree-line-width: 1px;
 $before-line-height: 22px;
@@ -52,7 +55,7 @@ $level-left-map: (
 );
 @for $i from 2 through 15 {
   $value: -42px + $i;
-  $level-left-map: map-merge($level-left-map, ($i: $value));
+  $level-left-map: map.merge($level-left-map, ($i: $value));
 }
 // 层级前左偏移量映射
 $level-before-left-map: ();
@@ -102,6 +105,14 @@ $level-after-left-map: ();
 }
 
 // 树形容器样式
+
+// 基础样式
+.tree-container {
+  position: relative;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
 .tree-container {
   padding: 8px 16px;
   overflow-y: auto;
@@ -120,7 +131,7 @@ $level-after-left-map: ();
 
   @for $level from 1 through 15 {
     &.level-#{$level} {
-      margin-left: map-get($level-left-map, $level);
+      margin-left: map.get($level-left-map, $level);
 
       &.not-children {
         margin-left: $not-children-left;
@@ -185,13 +196,13 @@ $level-after-left-map: ();
   @for $level from 2 through 15 {
     &.level-#{$level} {
       &::before {
-        left: map-get($level-before-left-map, $level);
+        left: map.get($level-before-left-map, $level);
         width: $tree-line-width;
         height: 100%;
         top: 0;
       }
       &::after {
-        left: map-get($level-left-map, $level);
+        left: map.get($level-left-map, $level);
         width: $line-length;
         height: $tree-line-width;
         top: 60%;
@@ -222,13 +233,12 @@ $level-after-left-map: ();
 
   @for $i from 1 through 16 {
     $value: -34px + $i;
-    $level-before-left-map: map-merge($level-before-left-map, ($i: $value));
-    $level-after-left-map: map-merge($level-after-left-map, ($i: $value));
-    @include tree-node-level($i, map-get($level-after-left-map, $i));
-
+    $level-before-left-map: map.merge($level-before-left-map, ($i: $value));
+    $level-after-left-map: map.merge($level-after-left-map, ($i: $value));
+    @include tree-node-level($i, map.get($level-after-left-map, $i));
     // 层级背景颜色样式
     &[data-level="#{$i}"] .tree-label {
-      background-color: map-get($level-bg-map, $i);
+      background-color: map.get($level-bg-map, $i);
     }
   }
   
@@ -287,9 +297,9 @@ $level-after-left-map: ();
   // 为不同层级的选中节点提供更丰富的视觉反馈
   @for $i from 1 through 16 {
     .tree-node[data-level="#{$i}"] .tree-label.selected {
-      $base-color: map-get($level-bg-map, $i);
-      $adjusted-bg: adjust-color($base-color, $saturation: 40%, $lightness: -15%);
-      $lightness: lightness($adjusted-bg);
+      $base-color: map.get($level-bg-map, $i);
+      $adjusted-bg: color.adjust($base-color, $saturation: 40%, $lightness: -15%);
+      $lightness: color.channel($adjusted-bg, "lightness", $space: hsl);
       
       background-color: $adjusted-bg;
       color: if($lightness > 40%, #333, white);
