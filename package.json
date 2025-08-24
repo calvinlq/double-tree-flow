@@ -1,5 +1,5 @@
 {
-  "name": "@calvinlq/double-tree-flow",
+  "name": "double-tree-flow",
   "version": "1.0.0",
   "description": "Double tree flow visualization tool",
   "type": "module",
@@ -27,15 +27,13 @@
     "type": "git",
     "url": "git+https://github.com/calvinlq/double-tree-flow.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "devDependencies": {
     "@types/node": "^24.3.0",
     "@vitejs/plugin-react": "^5.0.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "sass": "^1.90.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.3"
+    "vite": "^7.1.3",
+    "vite-plugin-dts": "^4.5.4"
   }
 }

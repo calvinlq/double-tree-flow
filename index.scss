@@ -5,11 +5,11 @@ $tree-line-color: #eee;
 $tree-line-width: 1px;
 $before-line-height: 22px;
 $after-line-top: 22px;
-$has-children-line-length: 14px;
+$has-children-line-length: 12px;
 $has-children-line-top: 22px;
 $last-child-line-height: 22px;
 $line-length: 36px;
-$not-children-left: -18px;
+$not-children-left: -20px;
 
 // 层级背景颜色变量
 $level-1-bg: #e6f7ff;
@@ -128,13 +128,20 @@ $level-after-left-map: ();
   margin-left: 0;
   overflow: hidden;
   border-radius: 5px;
+  &.level-1 {
+        margin-left: map.get($level-left-map, 1);
 
-  @for $level from 1 through 15 {
+        &.not-children {
+          margin-left: -7px;
+        }
+      }
+  @for $level from 2 through 15 {
     &.level-#{$level} {
-      margin-left: map.get($level-left-map, $level);
+      margin-left: -39px;
 
       &.not-children {
-        margin-left: $not-children-left;
+        // margin-left:    $not-children-left;
+        margin-left:    $not-children-left;
       }
     }
   }

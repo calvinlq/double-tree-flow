@@ -43,9 +43,6 @@ coverage/
 # 操作系统文件
 $RECYCLE.BIN/
 
-# 编译生成的类型文件
-*.d.ts
-
 # 其他临时文件和目录
 temp/
 cache/

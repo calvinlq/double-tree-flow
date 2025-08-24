@@ -30,16 +30,8 @@ console.log('DoubleTreeFlow类定义:', DoubleTreeFlow);
 if (typeof document === 'undefined') {
     console.log('在Node.js环境中测试，跳过DOM相关操作');
 } else {
-    // 创建容器元素
-    const container = document.createElement('div');
-    container.id = 'test-container';
-    document.body.appendChild(container);
-
     // 初始化库
-    const treeCanvas = new DoubleTreeFlow('test-container', leftTreeData, rightTreeData, linkList, {
-        treeContainerWidth: '300px',
-        treeContainerMaxHeight: '200px'
-    });
+    const treeCanvas = new DoubleTreeFlow('test-container', leftTreeData, rightTreeData, linkList);
     console.log('库初始化成功!');
 }
 

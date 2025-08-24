@@ -13,16 +13,19 @@
 <body>
     <div class="app-container">
         <h3>Double Tree Flow Demo</h1>
-        <div id="double-tree-container" data-treeWidth="300" data-treeHeight="200"></div>
+        <div id="double-tree-container" data-treeWidth="300" data-treeHeight="300"></div>
     </div>
 
     <script type="module">
         import DoubleTreeFlow from './index.ts';
         import './index.scss'
         import { LTreeData, RTreeData, lnkList } from './mockData.js';
-
+ 
+        const options = {
+            enableLink: true,  //开启连线, 默认false
+        }
         // 初始化组件 
-        new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList);
+        new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList, options);
     </script>
 </body>
 </html>

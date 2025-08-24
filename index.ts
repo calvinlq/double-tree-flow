@@ -25,14 +25,18 @@ class DoubleTreeFlow {
   private container: HTMLElement;
   private connections: Connection[] = [];
   private selectedNode: string | null = null;
+  private enableLink: boolean;
+  private bezier: number;
   
   constructor(
     containerId: string,
     leftTreeData: TreeNode[],
     rightTreeData: TreeNode[],
     linkList: Connection[],
-    options: { treeContainerWidth?: string, treeContainerMaxHeight?: string } = {}
+    options: { bezier?: number; enableLink?: boolean } = {}
   ) {
+    this.enableLink = options.enableLink !== undefined ? options.enableLink : false;
+    this.bezier = options.bezier !== undefined ? options.bezier : 100;
     this.leftTreeData = leftTreeData;
     this.rightTreeData = rightTreeData;
     this.linkList = linkList;
@@ -56,9 +60,6 @@ class DoubleTreeFlow {
     const leftTree = document.createElement("div");
     leftTree.className = "tree-container";
     leftTree.id = "leftTree";
-
-    // 注意：dataset属性会自动将驼峰式命名转换为小写
-    // 所以data-treeWidth在dataset中是treewidth而不是treeWidth
     const treeContainerWidth = this.container.dataset.treewidth;
     const treeContainerMaxHeight = this.container.dataset.treeheight;
     
@@ -73,7 +74,6 @@ class DoubleTreeFlow {
     const rightTree = document.createElement("div");
     rightTree.className = "tree-container";
     rightTree.id = "rightTree";
-    // 应用树容器样式，添加px单位
     if (treeContainerWidth) {
       rightTree.style.width = `${treeContainerWidth}px`;
     }
@@ -195,38 +195,49 @@ class DoubleTreeFlow {
 
     // 如果选中了不同的节点，创建连接
     if (this.selectedNode && this.selectedNode !== nodeId) {
-      // 允许左右和右左连接
-      const isLeftToRight = this.selectedNode.startsWith("left-") && nodeId.startsWith("right-");
-      const isRightToLeft = this.selectedNode.startsWith("right-") && nodeId.startsWith("left-");
+        // 允许左右和右左连接
+        const isLeftToRight = this.selectedNode.startsWith("left-") && nodeId.startsWith("right-");
+        const isRightToLeft = this.selectedNode.startsWith("right-") && nodeId.startsWith("left-");
 
-      if (isLeftToRight || isRightToLeft) {
-        const source = this.selectedNode;
-        const target = nodeId;
-        this.connections.push({ source, target });
-        this.drawConnections();
+        if (this.enableLink && (isLeftToRight || isRightToLeft)) {
+          const source = this.selectedNode;
+          const target = nodeId;
+          this.connections.push({ source, target });
+          this.drawConnections();
+          this.selectedNode = null;
+          return;
+        } else if (!this.enableLink) {
+          this.selectedNode = nodeId;
+          const selectedElement = document.querySelector(
+            `[data-id="${nodeId}"] .tree-label`
+          ) as HTMLElement | null;
+          if (selectedElement) {
+            selectedElement.classList.add("selected");
+          }
+          return;
+        }
+      }
+
+      // 如果点击的是已经选中的节点，则移除选中状态
+      if (this.selectedNode === nodeId) {
+        const selectedElement = document.querySelector(
+          `[data-id="${nodeId}"] .tree-label`
+        ) as HTMLElement | null;
+        if (selectedElement) {
+          selectedElement.classList.remove("selected");
+        }
         this.selectedNode = null;
         return;
       }
-    }
-    // 如果点击的是已经选中的节点，则移除选中状态
-    if (this.selectedNode === nodeId) {
+
+      // 设置新的选中节点
+      this.selectedNode = nodeId;
       const selectedElement = document.querySelector(
         `[data-id="${nodeId}"] .tree-label`
       ) as HTMLElement | null;
       if (selectedElement) {
-        selectedElement.classList.remove("selected");
+        selectedElement.classList.add("selected");
       }
-      this.selectedNode = null;
-      return;
-    }
-    // 设置新的选中节点
-    this.selectedNode = nodeId;
-    const selectedElement = document.querySelector(
-      `[data-id="${nodeId}"] .tree-label`
-    ) as HTMLElement | null;
-    if (selectedElement) {
-      selectedElement.classList.add("selected");
-    }
   }
 
   private isNodeVisible(nodeId: string): boolean {
@@ -428,7 +439,6 @@ class DoubleTreeFlow {
         const isLeftToRight = conn.source.startsWith("left-") && conn.target.startsWith("right-");
         const isRightToLeft = conn.source.startsWith("right-") && conn.target.startsWith("left-");
 
-        // 提前计算节点可见性位置，确保在所有代码路径中都有定义
         const sourceVisibilityPos = this.getNodeVisibilityPosition(conn.source);
         const targetVisibilityPos = this.getNodeVisibilityPosition(conn.target);
 
@@ -644,7 +654,7 @@ class DoubleTreeFlow {
           "path"
         );
         let d: string;
-        const controlOffset = 100; // 贝塞尔曲线控制点偏移量
+        const controlOffset = this.bezier || 100; // 贝塞尔曲线控制点偏移量
 
         if (isLeftToRight) {
           d = `M ${startX} ${startY} C ${startX + controlOffset} ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;

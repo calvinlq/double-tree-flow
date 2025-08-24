@@ -35,7 +35,7 @@ yarn add double-tree-flow
 ```javascript
 // 导入库
 import DoubleTreeFlow from 'double-tree-flow';
-import 'double-tree-flow/dist/double-tree-flow.css';
+import 'double-tree-flow/dist/index.css';
 
 // 准备数据
 const leftTreeData = [
@@ -135,17 +135,19 @@ treeFlow.updateData(newLeftTreeData, newRightTreeData, newLinkList);
     【id以left-或right-开头】
   2. 连接线数据必须包含`source`和`target`属性，对应树节点的`id`。
   3. 树节点数据可以包含`icon`属性，用于显示节点图标。
+  4. 构造函数可以接受一个可选的配置对象，用于自定义行为和样式。
 
 ### DoubleTreeFlow类
 
 #### 构造函数
 ```typescript
-constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[])
+constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options: { bezier?: number; enableLink?: boolean } = {})
 ```
 - `containerId`: 容器元素的ID
 - `leftTreeData`: 左侧树的数据
 - `rightTreeData`: 右侧树的数据
 - `linkList`: 初始连接线列表
+- `options`: 配置选项，包含`bezier`（贝塞尔曲线控制点偏移量）和`enableLink`（是否启用连接线）
 
 #### 方法
 - `redraw()`: 重绘连接线
