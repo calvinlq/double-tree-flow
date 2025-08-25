@@ -17,12 +17,13 @@
     </div>
 
     <script type="module">
-        import DoubleTreeFlow from './dist/index.es.js';
-        import './dist/index.css'
+        import DoubleTreeFlow from './index.ts';
+        import './index.scss'
         import { LTreeData, RTreeData, lnkList } from './mockData.js';
  
         const options = {
             enableLink: true,  //开启连线, 默认false
+            enableTxtBgColor: false, //开启文本背景颜色, 默认false
         }
         // 初始化组件 
         new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList, options);

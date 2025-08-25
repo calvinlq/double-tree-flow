@@ -11,6 +11,8 @@
 - 支持自定义节点样式、连接线样式
 - 支持节点拖拽功能
 - 提供丰富的事件回调接口
+- 支持节点文本背景色显示控制
+- 支持节点类型区分（输入/输出/输入输出）及对应图标显示
 
 ## 安装
 
@@ -49,6 +51,7 @@ const leftTreeData = [
                 id: 'left-1-1',
                 label: '子节点1-1',
                 level: 2,
+                type: 'input',
                 icon: 'icon.png'
             },
             {
@@ -61,6 +64,7 @@ const leftTreeData = [
                         id: 'left-1-2-1',
                         label: '子节点1-2-1',
                         level: 3,
+                        type: 'output',
                         icon: 'icon.png'
                     }
                 ]
@@ -71,7 +75,8 @@ const leftTreeData = [
         id: 'left-2',
         label: '节点2',
         level: 1,
-        icon: 'icon.png'
+        icon: 'icon.png',
+        type: 'input'
     }
 ];
 
@@ -120,7 +125,8 @@ const linkList = [
 
 const treeFlow = new DoubleTreeFlow('double-tree-container', leftTreeData, rightTreeData, linkList, {
   bezier: 100,
-  enableLink: true
+  enableLink: true,
+  enableTxtBgColor: true
 });
 
 // 方法调用
@@ -138,19 +144,23 @@ treeFlow.updateData(newLeftTreeData, newRightTreeData, newLinkList);
     【id以left-或right-开头】
   2. 连接线数据必须包含`source`和`target`属性，对应树节点的`id`。
   3. 树节点数据可以包含`icon`属性，用于显示节点图标。
-  4. 构造函数可以接受一个可选的配置对象，用于自定义行为和样式。
+  4. 树节点数据可以包含`type`属性，用于区分节点类型（'input' | 'output' | 'inOut'），对应不同图标显示
+  5. 构造函数可以接受一个可选的配置对象，用于自定义行为和样式。
 
 ### DoubleTreeFlow类
 
 #### 构造函数
 ```typescript
-constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options: { bezier?: number; enableLink?: boolean } = {})
+constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean } = {})
 ```
 - `containerId`: 容器元素的ID
 - `leftTreeData`: 左侧树的数据
 - `rightTreeData`: 右侧树的数据
 - `linkList`: 初始连接线列表
-- `options`: 配置选项，包含`bezier`（贝塞尔曲线控制点偏移量）和`enableLink`（是否启用连接线）
+- `options`: 配置选项，包含：
+  - `bezier`: 贝塞尔曲线控制点偏移量
+  - `enableLink`: 是否启用连接线
+  - `enableTxtBgColor`: 是否启用节点文本背景色显示
 
 #### 方法
 - `redraw()`: 重绘连接线
@@ -165,6 +175,7 @@ interface TreeNode {
   label: string;
   level: number;
   icon?: string;
+  type?: 'input' | 'output' | 'inOut'; // 节点类型，可选
   children?: TreeNode[];
   parentId?: string;
 }

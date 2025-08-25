@@ -3,13 +3,14 @@
 
 $tree-line-color: #eee;
 $tree-line-width: 1px;
-$before-line-height: 22px;
+$before-line-height: 23px;
 $after-line-top: 22px;
 $has-children-line-length: 12px;
 $has-children-line-top: 22px;
 $last-child-line-height: 22px;
-$line-length: 36px;
-$not-children-left: -20px;
+$line-length: 14px;
+$not-children-left: -45px;
+$left-offset: -30px;
 
 // 层级背景颜色变量
 $level-1-bg: #e6f7ff;
@@ -51,7 +52,7 @@ $level-bg-map: (
 
 // 层级左偏移量映射
 $level-left-map: (
-  1: -26px,
+  1: -24px,
 );
 @for $i from 2 through 15 {
   $value: -42px + $i;
@@ -65,7 +66,7 @@ $level-after-left-map: ();
 
 
 // 定义mixin用于生成不同层级节点样式
-@mixin tree-node-level($level, $left-offset) {
+@mixin tree-node-level($level) {
   .tree-node.level-#{$level} {
     &::before {
       left: $left-offset;
@@ -75,7 +76,7 @@ $level-after-left-map: ();
     }
 
     &::after {
-      left: $left-offset;
+      left: -30px; //$left-offset;
       width: $line-length;
       height: $tree-line-width;
       top: 60%;
@@ -114,7 +115,7 @@ $level-after-left-map: ();
 }
 
 .tree-container {
-  padding: 8px 16px;
+  padding: 8px 16px 8px 14px;
   overflow-y: auto;
   border: 1px solid #eee;
   border-radius: 5px;
@@ -241,10 +242,9 @@ $level-after-left-map: ();
   @for $i from 1 through 16 {
     $value: -34px + $i;
     $level-before-left-map: map.merge($level-before-left-map, ($i: $value));
-    $level-after-left-map: map.merge($level-after-left-map, ($i: $value));
-    @include tree-node-level($i, map.get($level-after-left-map, $i));
+    @include tree-node-level($i);
     // 层级背景颜色样式
-    &[data-level="#{$i}"] .tree-label {
+    &[data-level="#{$i}"] .tree-label.tree-bg-color {
       background-color: map.get($level-bg-map, $i);
     }
   }
@@ -255,17 +255,57 @@ $level-after-left-map: ();
 .tree-toggle {
   cursor: pointer;
   display: inline-block;
-  width: 16px;
-  min-width: 16px;
-  height: 16px;
+  width: 12px;
+  min-width: 12px;
+  max-height: 12px;
+  height: 12px;
   text-align: center;
-  line-height: 16px;
+  line-height: 12px;
   margin-right: 8px;
-  border: 1px solid #eee;
-  border-radius: 3px;
+  border: 2px solid #EDB431;
+  border-radius: 1px;
   position: relative;
   z-index: 10;
-  background-color: white;
+  background-color: #E08500;
+  color: #fff;
+}
+.plus {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 2px;
+    background-color: #fff;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 8px;
+    background-color: #fff;
+  }
+}
+.minus::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 2px;
+  background-color: #fff;
+}
+
+.tree-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
 }
 
 // 子节点容器样式
@@ -281,9 +321,9 @@ $level-after-left-map: ();
 // 节点标签样式
   .tree-label {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 2px 0;
     border-radius: 4px;
-    background-color: #f0f0f0;
+    background-color: #FFFFFF;
     cursor: pointer;
     text-align: left;
     white-space: nowrap;
@@ -309,9 +349,16 @@ $level-after-left-map: ();
       $lightness: color.channel($adjusted-bg, "lightness", $space: hsl);
       
       background-color: $adjusted-bg;
-      color: if($lightness > 40%, #333, white);
+      color: if($lightness > 40%, #303033, white);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      padding-left: 10px;
     }
+  }
+  .tree-node .default.tree-label.selected {
+    background-color: rgba(254,115,47, 0.5);
+    color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    padding-left: 6px;
   }
 
 // 连接层样式

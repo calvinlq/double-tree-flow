@@ -1,11 +1,15 @@
 // 导入样式文件
 import './index.scss';
 
+// 定义节点类型枚举
+type NodeType = 'input' | 'output' | 'inOut';
+
 // 定义树节点接口
 interface TreeNode {
   id: string;
   label: string;
   level: number;
+  type: NodeType;
   icon?: string;
   children?: TreeNode[];
   parentId?: string;
@@ -17,7 +21,6 @@ interface Connection {
   target: string;
 }
 
-// 主类
 class DoubleTreeFlow {
   private leftTreeData: TreeNode[];
   private rightTreeData: TreeNode[];
@@ -27,15 +30,17 @@ class DoubleTreeFlow {
   private selectedNode: string | null = null;
   private enableLink: boolean;
   private bezier: number;
+  private enableTxtBgColor: boolean;
   
   constructor(
     containerId: string,
     leftTreeData: TreeNode[],
     rightTreeData: TreeNode[],
     linkList: Connection[],
-    options: { bezier?: number; enableLink?: boolean } = {}
+    options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean } = {}
   ) {
     this.enableLink = options.enableLink !== undefined ? options.enableLink : false;
+    this.enableTxtBgColor = options.enableTxtBgColor !== undefined ? options.enableTxtBgColor : false;
     this.bezier = options.bezier !== undefined ? options.bezier : 100;
     this.leftTreeData = leftTreeData;
     this.rightTreeData = rightTreeData;
@@ -63,7 +68,6 @@ class DoubleTreeFlow {
     const treeContainerWidth = this.container.dataset.treewidth;
     const treeContainerMaxHeight = this.container.dataset.treeheight;
     
-    // 应用树容器样式，添加px单位
     if (treeContainerWidth) {
       leftTree.style.width = `${treeContainerWidth}px`;
     }
@@ -117,7 +121,6 @@ class DoubleTreeFlow {
       nodeElement.dataset.parentId = node.parentId;
     }
 
-    // 创建包含toggle和label的flex容器
     const flexContainer = document.createElement("div");
     flexContainer.className = `tree-node-row level-${node.level}`;
     nodeElement.appendChild(flexContainer);
@@ -125,15 +128,19 @@ class DoubleTreeFlow {
     // 切换按钮
     if (node.children && node.children.length > 0) {
       const toggleElement = document.createElement("span");
-      toggleElement.className = "tree-toggle";
-      toggleElement.textContent = "-";
+      toggleElement.className = "tree-toggle minus";
       toggleElement.addEventListener("click", (e) => {
         e.stopPropagation();
         const childrenElement = nodeElement.querySelector(".tree-children") as HTMLElement;
         childrenElement.classList.toggle("active");
-        toggleElement.textContent = childrenElement.classList.contains("active")
-          ? "-"
-          : "+";
+        const toggleActive =  childrenElement.classList.contains("active")
+        if (!toggleActive) {
+          toggleElement.classList.remove('minus')
+          toggleElement.classList.add('plus')
+        } else {
+          toggleElement.classList.remove('plus')
+          toggleElement.classList.add('minus')
+        }
         this.drawConnections(); // 节点展开/折叠时重新绘制连接线
       });
       flexContainer.appendChild(toggleElement);
@@ -148,19 +155,38 @@ class DoubleTreeFlow {
       flexContainer.appendChild(placeholder);
     }
 
-    // 添加图标
-    if (node.icon) {
+    // 根据节点类型设置图标
+    let iconPath = '';
+    switch (node.type) {
+      case 'input':
+        iconPath = 'assets/images/input.svg';
+        break;
+      case 'output':
+        iconPath = 'assets/images/output.svg';
+        break;
+      case 'inOut':
+        iconPath = 'assets/images/inOut.svg';
+        break;
+      default:
+        iconPath = node.icon || '';
+    }
+
+    if (iconPath) {
       const iconElement = document.createElement("img");
-      iconElement.src = node.icon;
-      iconElement.style.width = "16px";
-      iconElement.style.height = "16px";
-      iconElement.style.marginRight = "5px";
+      iconElement.src = iconPath;
+      iconElement.className= "tree-icon";
       flexContainer.appendChild(iconElement);
     }
 
     // 节点标签
     const labelElement = document.createElement("span");
     labelElement.className = "tree-label";
+    if (this.enableTxtBgColor) {
+      labelElement.className += " tree-bg-color";
+      labelElement.style.padding = '2px 10px';
+    } else {
+      labelElement.className += " default";
+    }
     labelElement.textContent = node.label;
     labelElement.addEventListener("click", () => {
       this.handleNodeClick(node.id);
@@ -670,9 +696,9 @@ class DoubleTreeFlow {
         path.setAttribute("d", d);
         // 根据连接方向设置不同颜色
         if (isLeftToRight) {
-          path.setAttribute("stroke", "#4096ff"); // 蓝色表示从左到右
+          path.setAttribute("stroke", "#0090F0"); // 蓝色表示从左到右
         } else if (isRightToLeft) {
-          path.setAttribute("stroke", "#ff7a45"); // 橙色表示从右到左
+          path.setAttribute("stroke", "#FE732F"); // 橙色表示从右到左
         } else {
           path.setAttribute("stroke", "#666"); // 默认颜色
         }
