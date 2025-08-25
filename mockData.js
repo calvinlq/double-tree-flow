@@ -338,8 +338,8 @@ function collectLeafNodes(treeData) {
 
 // 生成默认的树形数据
 // 调整左右两侧树的深度，使视觉更加平衡
-const LTreeData = generateTreeData('left', 5, 4, true);
-const RTreeData = generateTreeData('right', 4, 5, true);
+const LTreeData = generateTreeData('left', 5, 4, false);
+const RTreeData = generateTreeData('right', 4, 5, false);
 const lnkList = generateLinkList(LTreeData, RTreeData, 12);
 
 // 导出数据
