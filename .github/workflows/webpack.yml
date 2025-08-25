@@ -16,9 +16,20 @@ jobs:
       with:
         always-auth: true
         node-version: '20.x'
-        registry-url: https://registry.npmjs.org
+        registry-url: https://npm.pkg.github.com
         scope: '@calvinlq'
+        cache: 'npm'
     - name: Install dependencies
-      run: npm install && npm run dev
+      run: npm ci
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run tests
+      run: npm test
+    - name: Build production
+      run: npm run build 
+    - name: Deploy to GH Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
