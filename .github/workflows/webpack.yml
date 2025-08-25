@@ -11,9 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: npm install && npm run build
-    - name: Use Node.js ${{ matrix.node-version }}
-    - uses: peaceiris/actions-gh-pages@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+        always-auth: true
+        node-version: '20.x'
+        registry-url: https://registry.npmjs.org
+        scope: '@calvinlq'
+    - name: Install dependencies
+      run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
