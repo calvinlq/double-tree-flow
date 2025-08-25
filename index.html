@@ -9,17 +9,18 @@
             text-align: center;
         }
     </style>
+    <link rel="stylesheet" href="./dist/index.css">
 </head>
 <body>
     <div class="app-container">
-        <h3>Double Tree Flow Demo</h1>
+        <h3>Double Tree Flow Demo</h3>
         <div id="double-tree-container" data-treeWidth="300" data-treeHeight="300"></div>
     </div>
 
     <script type="module">
         // import DoubleTreeFlow from './index.ts';
+        // import './index.scss'
         import DoubleTreeFlow from './dist/index.es.js';
-        import './dist/index.css'
         import { LTreeData, RTreeData, lnkList } from './mockData.js';
  
         const options = {
