@@ -32,8 +32,8 @@ yarn add double-tree-flow
 
 ### 直接引入
 ```html
-<script src="https://unpkg.com/double-tree-flow/dist/double-tree-flow.umd.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/double-tree-flow/dist/double-tree-flow.css">
+<script src="https://unpkg.com/double-tree-flow/dist/inex.umd.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/double-tree-flow/dist/index.css">
 ```
 
 ## 使用示例
