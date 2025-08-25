@@ -1,6 +1,6 @@
 {
   "name": "double-tree-flow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Double tree flow visualization tool",
   "type": "module",
   "main": "dist/double-tree-flow.umd.js",

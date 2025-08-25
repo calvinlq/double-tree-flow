@@ -32,7 +32,7 @@ yarn add double-tree-flow
 
 ### 直接引入
 ```html
-<script src="https://unpkg.com/double-tree-flow/dist/inex.umd.js"></script>
+<script src="https://unpkg.com/double-tree-flow/dist/index.umd.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/double-tree-flow/dist/index.css">
 ```
 
