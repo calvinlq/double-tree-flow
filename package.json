@@ -12,7 +12,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "test": "node test.js"
+    "test": "node test.js",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [
     "tree",
