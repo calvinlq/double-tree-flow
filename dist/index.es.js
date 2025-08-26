@@ -1,4 +1,5 @@
-class x {
+const B = "data:image/svg+xml,%3csvg%20width='101'%20height='101'%20viewBox='0%200%20101%20101'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M10.5208%2024.6667V16.8333C10.5208%2014.5091%2012.4049%2012.625%2014.7291%2012.625H39.9791L50.5%2025.25H86.2708C88.5951%2025.25%2090.4791%2027.1341%2090.4791%2029.4583V84.1667C90.4791%2086.4909%2088.5951%2088.375%2086.2708%2088.375H14.7291C12.4049%2088.375%2010.5208%2086.4909%2010.5208%2084.1667V78.5'%20stroke='%23818181'%20stroke-width='5'%20stroke-linecap='round'%20stroke-linejoin='round'/%3e%3cpath%20d='M3%2062.5V47.5H25.5V32.4142C25.5%2031.5233%2026.5771%2031.0771%2027.2071%2031.7071L50.2929%2054.7929C50.6834%2055.1834%2050.6834%2055.8166%2050.2929%2056.2071L27.2071%2079.2929C26.5771%2079.9229%2025.5%2079.4767%2025.5%2078.5858V62.5H3Z'%20fill='%23F1BA10'%20stroke='%233D3D3D'%20stroke-width='2'/%3e%3c/svg%3e", q = "data:image/svg+xml,%3csvg%20width='101'%20height='101'%20viewBox='0%200%20101%20101'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M90.4791%2032V29.4583C90.4791%2027.1341%2088.5951%2025.25%2086.2708%2025.25H50.5L39.9791%2012.625H14.7291C12.4049%2012.625%2010.5208%2014.5091%2010.5208%2016.8333V84.1667C10.5208%2086.4909%2012.4049%2088.375%2014.7291%2088.375H86.2708C88.5951%2088.375%2090.4791%2086.4909%2090.4791%2084.1667V79.5'%20stroke='%23818181'%20stroke-width='5'%20stroke-linecap='round'%20stroke-linejoin='round'/%3e%3cpath%20d='M51%2062.5V47.5H73.5V32.4142C73.5%2031.5233%2074.5771%2031.0771%2075.2071%2031.7071L98.2929%2054.7929C98.6834%2055.1834%2098.6834%2055.8166%2098.2929%2056.2071L75.2071%2079.2929C74.5771%2079.9229%2073.5%2079.4767%2073.5%2078.5858V62.5H51Z'%20fill='%230068D4'%20stroke='%233D3D3D'%20stroke-width='2'/%3e%3c/svg%3e", H = "data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='utf-8'?%3e%3c!--%20Generator:%20Adobe%20Illustrator%2022.0.0,%20SVG%20Export%20Plug-In%20.%20SVG%20Version:%206.00%20Build%200)%20--%3e%3csvg%20version='1.1'%20id='图层_1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%20x='0px'%20y='0px'%20viewBox='0%200%2054%2054'%20style='enable-background:new%200%200%2054%2054;'%20xml:space='preserve'%20width='100px'%20height='100px'%3e%3cstyle%20type='text/css'%3e%20.st0{fill:none;stroke:%23333333;stroke-miterlimit:10;}%20.st1{fill:%23F1BA10;stroke:%23333333;stroke-miterlimit:10;}%20.st2{fill:%231664B5;stroke:%23333333;stroke-miterlimit:10;}%20%3c/style%3e%3cg%3e%3cpolygon%20class='st0'%20points='47.4,46.6%206.1,46.6%206.6,7.4%2047.9,7.4%20'/%3e%3cg%3e%3cpolygon%20class='st1'%20points='26.4,27.8%2013.8,15.2%2013.8,24.3%202.5,24.3%202.5,31.3%2013.8,31.3%2013.8,40.4%20'/%3e%3cpolygon%20class='st2'%20points='51.5,27.8%2038.9,15.2%2038.9,24.3%2027.6,24.3%2027.6,31.3%2038.9,31.3%2038.9,40.4%20'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e";
+class D {
   constructor(t, s, i, r, e = {}) {
     this.connections = [], this.selectedNode = null, this.enableLink = e.enableLink !== void 0 ? e.enableLink : !1, this.enableTxtBgColor = e.enableTxtBgColor !== void 0 ? e.enableTxtBgColor : !1, this.bezier = e.bezier !== void 0 ? e.bezier : 100, this.leftTreeData = s, this.rightTreeData = i, this.linkList = r;
     const n = document.getElementById(t);
@@ -26,8 +27,8 @@ class x {
     const e = document.createElement("div");
     if (e.className = `tree-node-row level-${t.level}`, i.appendChild(e), t.children && t.children.length > 0) {
       const o = document.createElement("span");
-      o.className = "tree-toggle minus", o.addEventListener("click", (E) => {
-        E.stopPropagation();
+      o.className = "tree-toggle minus", o.addEventListener("click", (C) => {
+        C.stopPropagation();
         const l = i.querySelector(".tree-children");
         l.classList.toggle("active"), l.classList.contains("active") ? (o.classList.remove("plus"), o.classList.add("minus")) : (o.classList.remove("minus"), o.classList.add("plus")), this.drawConnections();
       }), e.appendChild(o);
@@ -38,13 +39,13 @@ class x {
     let n = "";
     switch (t.type) {
       case "input":
-        n = "assets/images/input.svg";
+        n = B;
         break;
       case "output":
-        n = "assets/images/output.svg";
+        n = q;
         break;
       case "inOut":
-        n = "assets/images/inOut.svg";
+        n = H;
         break;
       default:
         n = t.icon || "";
@@ -58,8 +59,8 @@ class x {
       this.handleNodeClick(t.id);
     }), e.appendChild(a), t.children && t.children.length > 0) {
       const o = document.createElement("div");
-      o.className = "tree-children active", i.appendChild(o), t.children.forEach((E) => {
-        E.parentId = t.id, this.renderTreeNode(E, o);
+      o.className = "tree-children active", i.appendChild(o), t.children.forEach((C) => {
+        C.parentId = t.id, this.renderTreeNode(C, o);
       });
     }
     s.appendChild(i);
@@ -133,9 +134,9 @@ class x {
       const l = s.parentElement?.closest(".tree-node");
       return l ? this.findNearestVisibleAncestor(l.dataset.id) : null;
     }
-    return a.sort((l, p) => {
-      const $ = l.getBoundingClientRect(), T = p.getBoundingClientRect();
-      return Math.abs($.top - n.top) - Math.abs(T.top - n.top);
+    return a.sort((l, g) => {
+      const k = l.getBoundingClientRect(), $ = g.getBoundingClientRect();
+      return Math.abs(k.top - n.top) - Math.abs($.top - n.top);
     }), a[0].dataset.id;
   }
   addScrollListenersWithThrottle() {
@@ -183,65 +184,65 @@ class x {
         if (!n) return;
         const a = r.closest(".tree-container");
         if (!a) return;
-        const o = i.getBoundingClientRect(), E = r.getBoundingClientRect(), l = n.getBoundingClientRect(), p = a.getBoundingClientRect(), $ = s.source.startsWith("left-") && s.target.startsWith("right-"), T = s.source.startsWith("right-") && s.target.startsWith("left-"), R = this.getNodeVisibilityPosition(s.source), y = this.getNodeVisibilityPosition(s.target);
+        const o = i.getBoundingClientRect(), C = r.getBoundingClientRect(), l = n.getBoundingClientRect(), g = a.getBoundingClientRect(), k = s.source.startsWith("left-") && s.target.startsWith("right-"), $ = s.source.startsWith("right-") && s.target.startsWith("left-"), T = this.getNodeVisibilityPosition(s.source), v = this.getNodeVisibilityPosition(s.target);
         let f, u, b, h;
         if (this.isNodeVisible(s.source)) {
-          const w = n.getBoundingClientRect();
-          f = n.id === "leftTree" ? w.right + 5 - e.left : w.left - 5 - e.left, u = o.top + o.height / 2 - e.top;
+          const N = n.getBoundingClientRect();
+          f = n.id === "leftTree" ? N.right + 5 - e.left : N.left - 5 - e.left, u = o.top + o.height / 2 - e.top;
         } else {
-          const w = document.querySelector(
+          const N = document.querySelector(
             `[data-id="${s.source}"]`
           );
-          let c = null, m = w.parentElement;
+          let c = null, m = N.parentElement;
           for (; m && m.classList.contains("tree-children"); ) {
             if (!m.classList.contains("active")) {
-              const N = m.parentElement.dataset.id;
-              if (this.isNodeVisible(N)) {
-                c = N;
+              const w = m.parentElement.dataset.id;
+              if (this.isNodeVisible(w)) {
+                c = w;
                 break;
               }
             }
             m = m.parentElement?.parentElement || null;
           }
           if (c) {
-            const N = document.querySelector(
+            const w = document.querySelector(
               `[data-id="${c}"] .tree-label`
             ).getBoundingClientRect();
-            f = n.id === "leftTree" ? l.right + 5 - e.left : l.left - 5 - e.left, u = N.top + N.height / 2 - e.top;
-          } else if (f = n.id === "leftTree" ? l.right + 5 - e.left : l.left - 5 - e.left, R === "top")
+            f = n.id === "leftTree" ? l.right + 5 - e.left : l.left - 5 - e.left, u = w.top + w.height / 2 - e.top;
+          } else if (f = n.id === "leftTree" ? l.right + 5 - e.left : l.left - 5 - e.left, T === "top")
             u = l.top - e.top;
-          else if (R === "bottom")
+          else if (T === "bottom")
             u = l.bottom - e.top;
           else {
             const d = this.findNearestVisibleAncestor(s.source);
             if (d) {
-              const N = document.querySelector(
+              const w = document.querySelector(
                 `[data-id="${d}"] .tree-label`
               ).getBoundingClientRect();
-              u = N.top + N.height / 2 - e.top;
+              u = w.top + w.height / 2 - e.top;
             } else
               u = l.top + l.height / 2 - e.top;
           }
         }
         f -= e.left, u -= e.top;
-        let A = null;
+        let R = null;
         if (!this.isNodeVisible(s.source)) {
           let c = document.querySelector(`[data-id="${s.source}"]`).parentElement;
           for (; c && c.classList.contains("tree-children"); ) {
             if (!c.classList.contains("active")) {
               const d = c.parentElement.dataset.id;
               if (this.isNodeVisible(d)) {
-                A = d;
+                R = d;
                 break;
               }
             }
             c = c.parentElement?.parentElement || null;
           }
         }
-        R === "top" && !A && (u = n.getBoundingClientRect().top - e.top);
-        let v = null;
+        T === "top" && !R && (u = n.getBoundingClientRect().top - e.top);
+        let y = null;
         if (this.isNodeVisible(s.target))
-          b = a.id === "leftTree" ? p.right + 5 - e.left : p.left - 5 - e.left, h = E.top + E.height / 2 - e.top;
+          b = a.id === "leftTree" ? g.right + 5 - e.left : g.left - 5 - e.left, h = C.top + C.height / 2 - e.top;
         else {
           let c = document.querySelector(
             `[data-id="${s.target}"]`
@@ -250,21 +251,21 @@ class x {
             if (!c.classList.contains("active")) {
               const d = c.parentElement.dataset.id;
               if (this.isNodeVisible(d)) {
-                v = d;
+                y = d;
                 break;
               }
             }
             c = c.parentElement?.parentElement || null;
           }
-          if (v) {
+          if (y) {
             const d = document.querySelector(
-              `[data-id="${v}"] .tree-label`
+              `[data-id="${y}"] .tree-label`
             ).getBoundingClientRect();
-            b = a.id === "leftTree" ? p.right + 5 - e.left : p.left - 5 - e.left, h = d.top + d.height / 2 - e.top;
-          } else if (b = a.id === "leftTree" ? p.right + 5 - e.left : p.left - 5 - e.left, y === "top")
-            h = p.top - e.top - 10;
-          else if (y === "bottom")
-            h = p.bottom - 10 - e.top;
+            b = a.id === "leftTree" ? g.right + 5 - e.left : g.left - 5 - e.left, h = d.top + d.height / 2 - e.top;
+          } else if (b = a.id === "leftTree" ? g.right + 5 - e.left : g.left - 5 - e.left, v === "top")
+            h = g.top - e.top - 10;
+          else if (v === "bottom")
+            h = g.bottom - 10 - e.top;
           else {
             const m = this.findNearestVisibleAncestor(s.target);
             if (m) {
@@ -273,19 +274,19 @@ class x {
               ).getBoundingClientRect();
               h = d.top + d.height / 2 - e.top;
             } else
-              h = p.top + p.height / 2 - e.top;
+              h = g.top + g.height / 2 - e.top;
           }
         }
-        b -= e.left, h -= e.top, y === "top" && !v ? h = a.getBoundingClientRect().top - e.top : y === "bottom" && !v && (h = a.getBoundingClientRect().bottom - e.top);
-        const g = document.createElementNS(
+        b -= e.left, h -= e.top, v === "top" && !y ? h = a.getBoundingClientRect().top - e.top : v === "bottom" && !y && (h = a.getBoundingClientRect().bottom - e.top);
+        const p = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
         );
-        let S;
-        const C = this.bezier || 100;
-        $ ? (S = `M ${f} ${u} C ${f + C} ${u}, ${b - C} ${h}, ${b} ${h}`, g.setAttribute("marker-end", "url(#arrowhead-end)")) : T ? (S = `M ${f} ${u} C ${f - C} ${u}, ${b + C} ${h}, ${b} ${h}`, g.setAttribute("marker-end", "url(#arrowhead-start)")) : S = `M ${f} ${u} C ${f + C} ${u}, ${b - C} ${h}, ${b} ${h}`, g.setAttribute("d", S), $ ? g.setAttribute("stroke", "#0090F0") : T ? g.setAttribute("stroke", "#FE732F") : g.setAttribute("stroke", "#666");
-        const L = this.isNodeVisible(s.source), k = this.isNodeVisible(s.target), B = R === "top", V = y === "top";
-        g.setAttribute("stroke-width", "1.5"), g.setAttribute("fill", "none"), B || V || !L || !k ? g.setAttribute("stroke-dasharray", "5,5") : g.removeAttribute("stroke-dasharray"), t.appendChild(g);
+        let L;
+        const E = this.bezier || 100;
+        k ? (L = `M ${f} ${u} C ${f + E} ${u}, ${b - E} ${h}, ${b} ${h}`, p.setAttribute("marker-end", "url(#arrowhead-end)")) : $ ? (L = `M ${f} ${u} C ${f - E} ${u}, ${b + E} ${h}, ${b} ${h}`, p.setAttribute("marker-end", "url(#arrowhead-start)")) : L = `M ${f} ${u} C ${f + E} ${u}, ${b - E} ${h}, ${b} ${h}`, p.setAttribute("d", L), k ? p.setAttribute("stroke", "#0090F0") : $ ? p.setAttribute("stroke", "#FE732F") : p.setAttribute("stroke", "#666");
+        const A = this.isNodeVisible(s.source), S = this.isNodeVisible(s.target), x = T === "top", V = v === "top";
+        p.setAttribute("stroke-width", "1.5"), p.setAttribute("fill", "none"), x || V || !A || !S ? p.setAttribute("stroke-dasharray", "5,5") : p.removeAttribute("stroke-dasharray"), t.appendChild(p);
       }
     }), this.connections.length > 0 && !document.getElementById("arrowhead-end"))) {
       const s = document.createElementNS(
@@ -331,5 +332,5 @@ class x {
   }
 }
 export {
-  x as default
+  D as default
 };

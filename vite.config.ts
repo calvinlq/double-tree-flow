@@ -41,7 +41,8 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       outDir: 'dist',
-      copyDtsFiles: true
+      copyDtsFiles: true,
+      exclude: ['vite.config.ts', 'vite-env.d.ts', 'types/**', 'src/types/**', 'svg.d.ts', 'declaration.d.ts', 'svg-types.d.ts']
     }),
     {
       name: 'copy-assets',

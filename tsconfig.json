@@ -9,6 +9,7 @@
     "strict": true,
     "skipLibCheck": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["vite/client"]
   }
 }

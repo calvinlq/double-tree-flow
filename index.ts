@@ -1,6 +1,11 @@
 // 导入样式文件
 import './index.scss';
 
+// 导入图标资源
+import inputIcon from './assets/images/input.svg';
+import outputIcon from './assets/images/output.svg';
+import inOutIcon from './assets/images/inOut.svg';
+
 // 定义节点类型枚举
 type NodeType = 'input' | 'output' | 'inOut';
 
@@ -159,13 +164,13 @@ class DoubleTreeFlow {
     let iconPath = '';
     switch (node.type) {
       case 'input':
-        iconPath = 'assets/images/input.svg';
+        iconPath = inputIcon;
         break;
       case 'output':
-        iconPath = 'assets/images/output.svg';
+        iconPath = outputIcon;
         break;
       case 'inOut':
-        iconPath = 'assets/images/inOut.svg';
+        iconPath = inOutIcon;
         break;
       default:
         iconPath = node.icon || '';
