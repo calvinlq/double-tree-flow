@@ -9,7 +9,9 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   esbuild: {
-    drop: ['console', 'debugger']
+    drop: ['console', 'debugger'],
+    // 确保生成的代码与更广泛的浏览器和构建工具兼容
+    target: 'es2015'
   },
   build: {
     lib: {

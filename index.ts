@@ -281,7 +281,7 @@ class DoubleTreeFlow {
       if (!parent.classList.contains("active")) {
         return false;
       }
-      parent = parent.parentElement?.parentElement || null;
+      parent = parent.parentElement && parent.parentElement.parentElement ? parent.parentElement.parentElement : null;
     }
 
     // 检查节点是否在可视区域内（部分可见即可）
@@ -329,7 +329,7 @@ class DoubleTreeFlow {
 
     if (visibleSameLevelNodes.length === 0) {
       // 如果同层级没有可见节点，查找更高级别的节点
-      const grandparentElement = nodeElement.parentElement?.closest(".tree-node") as HTMLElement | null;
+      const grandparentElement = nodeElement.parentElement ? nodeElement.parentElement.closest(".tree-node") as HTMLElement | null : null;
       if (grandparentElement) {
         return this.findNearestVisibleAncestor(grandparentElement.dataset.id!);
       }
@@ -373,8 +373,8 @@ class DoubleTreeFlow {
 
   private getNodeVisibilityPosition(nodeId: string): "top" | "bottom" | "visible" | "unknown" {
     // 使用data-id属性获取节点
-    const nodeElement = document
-      .querySelector(`[data-id="${nodeId}"]`)?.querySelector(".tree-label") as HTMLElement | null;
+      const node = document.querySelector(`[data-id="${nodeId}"]`);
+      const nodeElement = node ? node.querySelector(".tree-label") as HTMLElement | null : null;
     if (!nodeElement) {
       return "unknown";
     }
@@ -499,7 +499,7 @@ class DoubleTreeFlow {
                 break;
               }
             }
-            sourceParent = sourceParent.parentElement?.parentElement || null;
+            sourceParent = sourceParent.parentElement && sourceParent.parentElement.parentElement ? sourceParent.parentElement.parentElement : null;
           }
 
           if (nearestSourceClosedParent) {
@@ -574,7 +574,7 @@ class DoubleTreeFlow {
                 break;
               }
             }
-            sourceParent = sourceParent.parentElement?.parentElement || null;
+            sourceParent = sourceParent.parentElement && sourceParent.parentElement.parentElement ? sourceParent.parentElement.parentElement : null;
           }
         }
 
@@ -619,7 +619,7 @@ class DoubleTreeFlow {
                 break;
               }
             }
-            targetParent = targetParent.parentElement?.parentElement || null;
+            targetParent = targetParent.parentElement && targetParent.parentElement.parentElement ? targetParent.parentElement.parentElement : null;
           }
 
           if (nearestTargetClosedParent) {
