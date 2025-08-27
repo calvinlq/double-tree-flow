@@ -212,6 +212,7 @@ function generateLinkList(leftTreeData, rightTreeData, count = 8) {
     
     // 添加连接样式属性
     links.push({
+      id: `link-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       source,
       target,
       type: 'leaf-to-leaf',
@@ -231,6 +232,7 @@ function generateLinkList(leftTreeData, rightTreeData, count = 8) {
     const target = source === leftNode.id ? rightNode.id : leftNode.id;
     
     links.push({
+      id: `link-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       source,
       target,
       type: 'leaf-to-folder',
@@ -250,6 +252,7 @@ function generateLinkList(leftTreeData, rightTreeData, count = 8) {
     const target = source === leftNode.id ? rightNode.id : leftNode.id;
     
     links.push({
+      id: `link-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       source,
       target,
       type: 'folder-to-folder',

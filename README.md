@@ -114,10 +114,10 @@ const rightTreeData = [
 ];
 
 const linkList = [
-    { source: 'left-1', target: 'right-1' },
-    { source: 'left-1-1', target: 'right-1-1' },
-    { source: 'left-2', target: 'right-2' },
-    { source: 'left-1-2-1', target: 'right-3' }
+    { source: 'left-1', target: 'right-1', id: '1' },
+    { source: 'left-1-1', target: 'right-1-1', id: '2' },
+    { source: 'left-2', target: 'right-2', id: '3' },
+    { source: 'left-1-2-1', target: 'right-3', id: '4' }
 ];
 
 
@@ -155,7 +155,7 @@ treeFlow.updateData(newLeftTreeData, newRightTreeData, newLinkList);
 
 #### 构造函数
 ```typescript
-constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean } = {})
+constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[], options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean; onConnectionsChange?: (connections: Connection[]) => void; onConnectionChange?: (connection: Connection, type: 'add' | 'remove') => void; onUpdateConnection?: (connection: Connection) => void } = {})
 ```
 - `containerId`: 容器元素的ID
 - `leftTreeData`: 左侧树的数据
@@ -165,10 +165,14 @@ constructor(containerId: string, leftTreeData: TreeNode[], rightTreeData: TreeNo
   - `bezier`: 贝塞尔曲线控制点偏移量
   - `enableLink`: 是否启用连接线
   - `enableTxtBgColor`: 是否启用节点文本背景色显示
+  - `onConnectionsChange`: 连接线列表变化时的回调函数
+  - `onConnectionChange`: 单个连接线添加或删除时的回调函数
+  - `onUpdateConnection`: 单个连接线更新时的回调函数
 
 #### 方法
 - `redraw()`: 重绘连接线
 - `updateData(leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[])`: 更新树数据和连接线
+- `updateConnection(updatedConnection: Connection)`: 更新指定连接的数据，必须包含id以标识要更新的连接
 
 ### 数据类型
 
@@ -188,6 +192,8 @@ interface TreeNode {
 interface Connection {
   source: string;
   target: string;
+  id?: string;
+  [key: string]: any; // 允许添加其他自定义属性
 }
 ```
 

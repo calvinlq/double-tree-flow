@@ -24,6 +24,8 @@ interface TreeNode {
 interface Connection {
   source: string;
   target: string;
+  id?: string;
+  [key: string]: any; // 允许添加其他自定义属性
 }
 
 class DoubleTreeFlow {
@@ -36,20 +38,27 @@ class DoubleTreeFlow {
   private enableLink: boolean;
   private bezier: number;
   private enableTxtBgColor: boolean;
+  private onConnectionsChange?: (connections: Connection[]) => void;
+  private onConnectionChange?: (connection: Connection, type: 'add' | 'remove') => void;
+  private onUpdateConnection?: (connection: Connection) => void;
   
   constructor(
     containerId: string,
     leftTreeData: TreeNode[],
     rightTreeData: TreeNode[],
     linkList: Connection[],
-    options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean } = {}
+    options: { bezier?: number; enableLink?: boolean; enableTxtBgColor?: boolean; onConnectionsChange?: (connections: Connection[]) => void; onConnectionChange?: (connection: Connection, type: 'add' | 'remove') => void; onUpdateConnection?: (connection: Connection) => void } = {}
   ) {
-    this.enableLink = options.enableLink !== undefined ? options.enableLink : false;
+    this.enableLink = options.enableLink !== undefined ? options.enableLink : true;
     this.enableTxtBgColor = options.enableTxtBgColor !== undefined ? options.enableTxtBgColor : false;
-    this.bezier = options.bezier !== undefined ? options.bezier : 100;
-    this.leftTreeData = leftTreeData;
-    this.rightTreeData = rightTreeData;
-    this.linkList = linkList;
+    this.bezier = options.bezier !== undefined ? options.bezier : 70;
+    this.onConnectionsChange = options.onConnectionsChange;
+    this.onConnectionChange = options.onConnectionChange;
+    this.onUpdateConnection = options.onUpdateConnection;
+    // 确保初始数据是数组
+    this.leftTreeData = Array.isArray(leftTreeData) ? leftTreeData : [];
+    this.rightTreeData = Array.isArray(rightTreeData) ? rightTreeData : [];
+    this.linkList = Array.isArray(linkList) ? linkList : [];
 
     const container = document.getElementById(containerId);
     if (!container) {
@@ -70,24 +79,21 @@ class DoubleTreeFlow {
     const leftTree = document.createElement("div");
     leftTree.className = "tree-container";
     leftTree.id = "leftTree";
-    const treeContainerWidth = this.container.dataset.treewidth;
-    const treeContainerMaxHeight = this.container.dataset.treeheight;
-    
-    if (treeContainerWidth) {
-      leftTree.style.width = `${treeContainerWidth}px`;
-    }
-    if (treeContainerMaxHeight) {
-      leftTree.style.maxHeight = `${treeContainerMaxHeight}px`;
-    }
 
     const rightTree = document.createElement("div");
     rightTree.className = "tree-container";
     rightTree.id = "rightTree";
+
+    const treeContainerWidth = this.container.dataset.treewidth;
+    const treeContainerHeight = this.container.dataset.treeheight;
+    
     if (treeContainerWidth) {
+      leftTree.style.width = `${treeContainerWidth}px`;
       rightTree.style.width = `${treeContainerWidth}px`;
     }
-    if (treeContainerMaxHeight) {
-      rightTree.style.maxHeight = `${treeContainerMaxHeight}px`;
+    if (treeContainerHeight) {
+      leftTree.style.height = `${treeContainerHeight}px`;
+      rightTree.style.height = `${treeContainerHeight}px`;
     }
 
     this.container.appendChild(leftTree);
@@ -233,8 +239,18 @@ class DoubleTreeFlow {
         if (this.enableLink && (isLeftToRight || isRightToLeft)) {
           const source = this.selectedNode;
           const target = nodeId;
-          this.connections.push({ source, target });
+          const id = `connection-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          const newConnection = { source, target, id };
+          this.connections.push(newConnection);
           this.drawConnections();
+          // 调用保存连线的钩子函数
+          if (this.onConnectionsChange) {
+            this.onConnectionsChange([...this.connections]);
+          }
+          // 调用单个连线变化的钩子函数
+          if (this.onConnectionChange) {
+            this.onConnectionChange(newConnection, 'add');
+          }
           this.selectedNode = null;
           return;
         } else if (!this.enableLink) {
@@ -439,11 +455,15 @@ class DoubleTreeFlow {
     return null;
   }
 
+  private currentConnection: Connection | null = null;
+
   private drawConnections(): void {
     const svg = document.getElementById("connection-layer") as SVGSVGElement | null;
     if (!svg) return;
     svg.innerHTML = ""; // 清除现有连接
     const svgRect = svg.getBoundingClientRect();
+
+    this.removeDeleteMenu();
 
     this.connections.forEach((conn) => {
       // 找到源节点和目标节点
@@ -589,8 +609,6 @@ class DoubleTreeFlow {
         let nearestTargetClosedParent: string | null = null;
 
         if (this.isNodeVisible(conn.target)) {
-          // 目标节点可见，连接点位于容器外部
-
           // 对于左侧树，连接点在容器右侧外面；对于右侧树，连接点在左侧外面
           endX = targetTreeContainer.id === "leftTree"
             ? targetContainerRect.right + 5 - svgRect.left
@@ -685,7 +703,7 @@ class DoubleTreeFlow {
           "path"
         );
         let d: string;
-        const controlOffset = this.bezier || 100; // 贝塞尔曲线控制点偏移量
+        const controlOffset = this.bezier
 
         if (isLeftToRight) {
           d = `M ${startX} ${startY} C ${startX + controlOffset} ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
@@ -732,6 +750,39 @@ class DoubleTreeFlow {
           path.removeAttribute("stroke-dasharray");
         }
 
+        // 添加鼠标悬浮事件，实现高亮效果
+        const originalStrokeWidth = path.getAttribute("stroke-width");
+        
+        path.style.pointerEvents = 'auto';
+        
+        path.setAttribute('vector-effect', 'non-scaling-stroke');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        
+        // 鼠标悬浮时只加粗连线
+        path.addEventListener('mouseenter', () => {
+          path.setAttribute('stroke-width', '2');
+          path.style.cursor = 'pointer';
+          path.setAttribute('stroke-opacity', '2');
+        });
+        
+        // 鼠标离开时恢复原始线宽
+        path.addEventListener('mouseleave', () => {
+          path.setAttribute('stroke-width', originalStrokeWidth || '1.5');
+          path.style.cursor = 'default';
+          path.setAttribute('stroke-opacity', '1');
+        });
+
+        // 添加右键点击事件，显示删除菜单
+        path.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          
+          this.currentConnection = conn;
+          
+          // 显示删除菜单
+          this.showDeleteMenu(e.clientX, e.clientY);
+        });
+
         svg.appendChild(path);
       }
     });
@@ -754,6 +805,7 @@ class DoubleTreeFlow {
       markerEnd.setAttribute("refX", "9");
       markerEnd.setAttribute("refY", "3.5");
       markerEnd.setAttribute("orient", "auto");
+      markerEnd.setAttribute("markerUnits", "userSpaceOnUse");
 
       const polygonEnd = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -775,6 +827,7 @@ class DoubleTreeFlow {
       markerStart.setAttribute("refX", "9");
       markerStart.setAttribute("refY", "3.5");
       markerStart.setAttribute("orient", "auto");
+      markerStart.setAttribute("markerUnits", "userSpaceOnUse");
 
       const polygonStart = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -797,13 +850,18 @@ class DoubleTreeFlow {
     const rightTree = document.getElementById("rightTree") as HTMLElement | null;
 
     if (!leftTree || !rightTree) return;
+    
+    // 确保leftTreeData和rightTreeData是数组
+    const safeLeftTreeData = Array.isArray(this.leftTreeData) ? this.leftTreeData : [];
+    const safeRightTreeData = Array.isArray(this.rightTreeData) ? this.rightTreeData : [];
+    
     // 渲染左侧树
-    this.leftTreeData.forEach((node) => {
+    safeLeftTreeData.forEach((node) => {
       this.renderTreeNode(node, leftTree!);
     });
 
     // 渲染右侧树
-    this.rightTreeData.forEach((node) => {
+    safeRightTreeData.forEach((node) => {
       this.renderTreeNode(node, rightTree!);
     });
 
@@ -813,20 +871,171 @@ class DoubleTreeFlow {
     // 添加默认连接线
     this.connections.push(...this.linkList);
     this.drawConnections(); // 绘制默认连接线
+    // 调用保存连线的钩子函数
+    if (this.onConnectionsChange) {
+      this.onConnectionsChange([...this.connections]);
+    }
   }
-  // 导出方法
+
   public redraw(): void {
     this.drawConnections();
   }
 
   public updateData(leftTreeData: TreeNode[], rightTreeData: TreeNode[], linkList: Connection[]): void {
-    this.leftTreeData = leftTreeData;
-    this.rightTreeData = rightTreeData;
-    this.linkList = linkList;
-    this.connections = [...linkList];
+    // 确保输入数据是数组
+    this.leftTreeData = Array.isArray(leftTreeData) ? leftTreeData : [];
+    this.rightTreeData = Array.isArray(rightTreeData) ? rightTreeData : [];
+    this.linkList = Array.isArray(linkList) ? linkList : [];
+    this.connections = [...this.linkList];
     this.initializeTrees();
+    // 调用保存连线的钩子函数
+    if (this.onConnectionsChange) {
+      this.onConnectionsChange([...this.connections]);
+    }
   }
+
+  // 获取当前所有连接线
+  public getConnections(): Connection[] {
+    return [...this.connections];
+  }
+  
+  // 删除单个连接线
+  public removeConnection(connection: Connection): boolean {
+    const index = this.connections.findIndex(
+      conn => (conn.id && conn.id === connection.id) || 
+             (conn.source === connection.source && conn.target === connection.target)
+    );
+    
+    if (index !== -1) {
+      const removedConnection = this.connections[index];
+      this.connections.splice(index, 1);
+      this.drawConnections();
+      
+      // 调用单个连线变化的钩子函数
+      if (this.onConnectionChange) {
+        this.onConnectionChange(removedConnection, 'remove');
+      }
+      
+      // 调用所有连线变化的钩子函数
+      if (this.onConnectionsChange) {
+        this.onConnectionsChange([...this.connections]);
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }
+
+  /**
+   * 更新指定连接的数据
+   * @param updatedConnection 更新后的连接对象，必须包含id以标识要更新的连接
+   */
+  public updateConnection(updatedConnection: Connection): void {
+    if (!updatedConnection.id) {
+      console.warn('Cannot update connection without id');
+      return;
+    }
+
+    // 查找要更新的连接
+    const index = this.connections.findIndex(conn => conn.id === updatedConnection.id);
+
+    if (index !== -1) {
+      // 保留原始的source和target，只更新其他属性
+      const originalConnection = this.connections[index];
+      this.connections[index] = {
+        ...originalConnection,
+        ...updatedConnection
+      };
+
+      // 重新绘制连接
+      this.drawConnections();
+      
+      // 调用更新连接的钩子函数
+      if (this.onUpdateConnection) {
+        this.onUpdateConnection(this.connections[index]);
+      }
+      
+      // 同时触发整体连接列表变化的钩子函数
+      if (this.onConnectionsChange) {
+        this.onConnectionsChange([...this.connections]);
+      }
+    }
+  }
+
+  // 显示删除菜单
+  private showDeleteMenu(x: number, y: number): void {
+    // 先移除已有的删除菜单
+    this.removeDeleteMenu();
+
+    // 创建删除菜单
+    const deleteMenu = document.createElement('div');
+    deleteMenu.id = 'connection-delete-menu';
+    deleteMenu.style.position = 'fixed';
+    deleteMenu.style.left = `${x + 10}px`; // 定位在点击位置右侧10px
+    deleteMenu.style.top = `${y}px`;
+    deleteMenu.style.backgroundColor = 'white';
+    deleteMenu.style.border = '1px solid #ddd';
+    deleteMenu.style.borderRadius = '4px';
+    deleteMenu.style.padding = '4px 0';
+    deleteMenu.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
+    deleteMenu.style.zIndex = '1000';
+    deleteMenu.style.fontSize = '12px';
+
+    // 创建删除按钮
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = '删除连线';
+    deleteButton.style.border = 'none';
+    deleteButton.style.backgroundColor = 'transparent';
+    deleteButton.style.padding = '6px 12px';
+    deleteButton.style.cursor = 'pointer';
+    deleteButton.style.textAlign = 'left';
+    deleteButton.style.color = '#666';
+
+    // 按钮悬停效果
+    deleteButton.addEventListener('mouseenter', () => {
+      deleteButton.style.backgroundColor = '#f5f5f5';
+      deleteButton.style.color = '#333';
+    });
+
+    deleteButton.addEventListener('mouseleave', () => {
+      deleteButton.style.backgroundColor = 'transparent';
+      deleteButton.style.color = '#666';
+    });
+
+    // 按钮点击事件
+    deleteButton.addEventListener('click', () => {
+      if (this.currentConnection) {
+        this.removeConnection(this.currentConnection);
+      }
+      this.removeDeleteMenu();
+    });
+
+    deleteMenu.appendChild(deleteButton);
+    document.body.appendChild(deleteMenu);
+
+    document.addEventListener('click', this.handleDocumentClick);
+  }
+
+  // 移除删除菜单
+  private removeDeleteMenu(): void {
+    const deleteMenu = document.getElementById('connection-delete-menu');
+    if (deleteMenu) {
+      document.body.removeChild(deleteMenu);
+    }
+    document.removeEventListener('click', this.handleDocumentClick);
+  }
+
+  private handleDocumentClick = (e: MouseEvent): void => {
+    const deleteMenu = document.getElementById('connection-delete-menu');
+    const svgLayer = document.getElementById('connection-layer');
+    
+    if (deleteMenu && e.target !== deleteMenu && !deleteMenu.contains(e.target as Node) && 
+        !(svgLayer && svgLayer.contains(e.target as Node) && (e.target as Element).tagName === 'path')) {
+      this.removeDeleteMenu();
+    }
+  };
 }
 
-// 导出类
+
 export default DoubleTreeFlow;

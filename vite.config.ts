@@ -10,7 +10,6 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   esbuild: {
     drop: ['console', 'debugger'],
-    // 确保生成的代码与更广泛的浏览器和构建工具兼容
     target: 'es2015'
   },
   build: {
@@ -43,8 +42,8 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       outDir: 'dist',
-      copyDtsFiles: true,
-      exclude: ['vite.config.ts', 'vite-env.d.ts', 'types/**', 'src/types/**', 'svg.d.ts', 'declaration.d.ts', 'svg-types.d.ts']
+      copyDtsFiles: false,
+      exclude: ['vite.config.ts', 'vite-env.d.ts', 'types/**', 'src/types/**', 'svg.d.ts', 'declaration.d.ts', 'svg-types.d.ts', 'node_modules/**'] // 明确排除node_modules
     }),
     {
       name: 'copy-assets',
@@ -58,7 +57,6 @@ export default defineConfig({
           console.log(`Created directory: ${destDir}`);
         }
         
-        // 自动读取并复制目录中的所有SVG文件
         try {
           const files = readdirSync(srcDir);
           // 定义支持的图片文件扩展名
@@ -75,7 +73,6 @@ export default defineConfig({
             return;
           }
           
-          console.log(`Found ${imageFiles.length} image file(s) to copy`);
           imageFiles.forEach(image => {
             const srcPath = join(srcDir, image);
             const destPath = join(destDir, image);

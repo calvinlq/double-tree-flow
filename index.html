@@ -7,6 +7,8 @@
     <style>
         .app-container {
             text-align: center;
+            margin: 0 auto;
+            padding: 20px;
         }
     </style>
     <link rel="stylesheet" href="./dist/index.css">
@@ -18,17 +20,35 @@
     </div>
 
     <script type="module">
-        // import DoubleTreeFlow from './index.ts';
+        import DoubleTreeFlow from './index.ts';
         // import './index.scss'
-        import DoubleTreeFlow from './dist/index.es.js';
+        // import DoubleTreeFlow from './dist/index.es.js';
         import { LTreeData, RTreeData, lnkList } from './mockData.js';
+
+        // 创建onConnectionChange回调函数
+        const handleConnectionChange = (connection, type) => {
+            console.log(`单个连线${type === 'add' ? '添加' : '删除'}: ${JSON.stringify(connection)}`);
+        };
+
+        // 创建onUpdateConnection回调函数
+        const handleUpdateConnection = (connection) => {
+            console.log(`连线已更新: ${JSON.stringify(connection)}`);
+        };
  
         const options = {
-            enableLink: true,  //开启连线, 默认false
+            enableLink: true,  //开启连线, 默认true
             enableTxtBgColor: false, //开启文本背景颜色, 默认false
-        }
-        // 初始化组件 
-        new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList, options);
+            onConnectionChange: handleConnectionChange, // 单个连线变化回调
+            onUpdateConnection: handleUpdateConnection // 连线更新回调
+        };
+        
+        // 保存实例引用，以便外部调用方法
+        const dtfInstance = new DoubleTreeFlow('double-tree-container', LTreeData, RTreeData, lnkList, options);
+        
+        // 更新连线
+        const updateAllConnections = (linkData) => {
+           dtfInstance.updateConnection(linkData);
+        };
     </script>
 </body>
 </html>
